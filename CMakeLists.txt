@@ -9,5 +9,10 @@ endif()
 
 project ("aya")
 
-add_executable(${PROJECT_NAME} "aya.cpp" )
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 23)
+add_subdirectory(external/glfw)
+add_subdirectory(external/DiligentCore)
+add_subdirectory(external/DiligentTools)
+
+add_executable(aya "aya.cpp" )
+set_property(TARGET aya PROPERTY CXX_STANDARD 23)
+
