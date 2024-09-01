@@ -13,11 +13,19 @@ set(DILIGENT_NO_DIRECT3D12 YES)
 set(DILIGENT_NO_METAL YES)
 set(DILIGENT_NO_OPENGL YES)
 
+
+set(GLFW_BUILD_EXAMPLES OFF)
+set(GLFW_BUILD_TESTS OFF)
+set(GLFW_BUILD_DOCS OFF)
+set(GLFW_BUILD_INSTALL OFF)
+
+
 add_subdirectory(configure)
 add_subdirectory(src)
 add_subdirectory(external/glfw)
 add_subdirectory(external/DiligentCore)
 add_subdirectory(external/DiligentTools)
+
 
 if (POLICY CMP0141)
   cmake_policy(SET CMP0141 NEW)

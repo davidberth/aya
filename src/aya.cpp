@@ -1,10 +1,22 @@
 ﻿#include <iostream>
-#include "configure/configure.h"
 
 using namespace std;
 
+import window;
+import engine;
+
 int main()
 {
-	cout << "Hello " << APPNAME << " " << APPVERSION << endl;
-	return 0;
+	init_window();
+	init_engine(get_native_window());
+	
+	while (!window_should_close())
+	{
+		poll_events();
+	}
+
+	cleanup_window();
+	
+	
+	return EXIT_SUCCESS;
 }
