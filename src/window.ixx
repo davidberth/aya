@@ -108,7 +108,6 @@ export bool init_window()
 	resolution_width = mode->width;
 	resolution_height = mode->height;
 
-
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 	static std::string caption = APPNAME;
@@ -130,9 +129,9 @@ export bool init_window()
 
 }
 
-export NativeWindow* get_native_window()
+export void* get_native_window()
 {
-	return glfwGetWin32Window(window);
+	return static_cast<void*>(glfwGetWin32Window(window));
 }
 
 export void get_window_size(int& width, int& height)
