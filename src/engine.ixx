@@ -7,14 +7,14 @@ module;
 #include <iostream>
 #include <vector>
 
-#include <EngineFactoryVk.h>
+#include "Graphics/GraphicsEngineVulkan/interface/EngineFactoryVk.h"
 
 
-#include "RenderDevice.h"
-#include "DeviceContext.h"
-#include "SwapChain.h"
+#include "Graphics/GraphicsEngine/interface/RenderDevice.h"
+#include "Graphics/GraphicsEngine/interface/DeviceContext.h"
+#include "Graphics/GraphicsEngine/interface/SwapChain.h"
 
-#include <..\..\Common\interface\RefCntAutoPtr.hpp>
+#include "Common\interface\RefCntAutoPtr.hpp"
 
 export module engine;
 
