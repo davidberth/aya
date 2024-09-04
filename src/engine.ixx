@@ -8,13 +8,16 @@ module;
 #include <vector>
 
 #include "Graphics/GraphicsEngineVulkan/interface/EngineFactoryVk.h"
-
-
 #include "Graphics/GraphicsEngine/interface/RenderDevice.h"
 #include "Graphics/GraphicsEngine/interface/DeviceContext.h"
 #include "Graphics/GraphicsEngine/interface/SwapChain.h"
 
-#include "Common\interface\RefCntAutoPtr.hpp"
+#include "ThirdParty/imgui/imgui.h"
+#include "Imgui/interface/ImGuiImplDiligent.hpp"
+#include "Imgui/interface/ImGuiUtils.hpp"
+#include "Common/interface/RefCntAutoPtr.hpp"
+
+
 
 export module engine;
 
@@ -72,17 +75,34 @@ RefCntAutoPtr<IDeviceContext> m_pImmediateContext;
 RefCntAutoPtr<ISwapChain>     m_pSwapChain;
 RefCntAutoPtr<IPipelineState> m_pPSO;
 
+ImGuiImplDiligent* imGUI = nullptr;
+SwapChainDesc SCDesc;
 
 
-export void init_engine(void* window)
+export void init_engine(void* window, int width, int height)
 {
-    SwapChainDesc SCDesc;
+
     EngineVkCreateInfo EngineCI;
     auto* pFactoryVk = GetEngineFactoryVk();
    
 	pFactoryVk->CreateDeviceAndContextsVk(EngineCI, &m_pDevice, &m_pImmediateContext);
     Win32NativeWindow Window{ window };
+    SCDesc.Width = width;
+	SCDesc.Height = height;
     pFactoryVk->CreateSwapChainVk(m_pDevice, m_pImmediateContext, SCDesc, Window, &m_pSwapChain);
+
+    ImGuiDiligentCreateInfo ci;
+    ci.pDevice = m_pDevice;
+	ci.BackBufferFmt = SCDesc.ColorBufferFormat;
+	ci.DepthBufferFmt = SCDesc.DepthBufferFormat;
+	imGUI = new ImGuiImplDiligent(ci);
+    ImGui::StyleColorsDiligent();
+
+
+
+    
+    
+    // (m_pDevice, m_pImmediateContext, SCDesc.ColorBufferFormat, SCDesc.DepthBufferFormat);
 	
 
 }
@@ -173,7 +193,46 @@ export void render()
     m_pImmediateContext->Draw(drawAttrs);
 }
 
+export void render_gui()
+{
+
+    static bool m_ShowDemoWindow = true;
+	static bool m_ShowAnotherWindow = false;
+	static float m_ClearColor[4] = { 0.45f, 0.55f, 0.60f, 1.00f };
+
+    imGUI->NewFrame(SCDesc.Width, SCDesc.Height, SCDesc.PreTransform);
+
+    ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
+
+    ImGui::Text("This is some useful text.");          // Display some text (you can use a format strings too)
+    ImGui::Checkbox("Demo Window", &m_ShowDemoWindow); // Edit bools storing our window open/close state
+    ImGui::Checkbox("Another Window", &m_ShowAnotherWindow);
+
+    static float f = 0.0f;
+    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);             // Edit 1 float using a slider from 0.0f to 1.0f
+    ImGui::ColorEdit3("clear color", (float*)&m_ClearColor); // Edit 3 floats representing a color
+
+    static int counter = 0;
+    if (ImGui::Button("Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
+        counter++;
+    ImGui::SameLine();
+    ImGui::Text("counter = %d", counter);
+
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::End();
+	imGUI->Render(m_pImmediateContext);
+
+}
+
 export void present()
 {
     m_pSwapChain->Present();
+}
+
+export void cleanup_engine()
+{
+	m_pSwapChain.Release();
+	m_pImmediateContext.Release();
+	m_pDevice.Release();
+	delete imGUI;
 }

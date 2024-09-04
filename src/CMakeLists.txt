@@ -7,6 +7,7 @@ set_target_properties(aya PROPERTIES
 
 include_directories(${CMAKE_SOURCE_DIR}/external/glfw/include)
 include_directories(${CMAKE_SOURCE_DIR}/external/DiligentCore)
+include_directories(${CMAKE_SOURCE_DIR}/external/DiligentTools)
 
 set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/external/build")
 add_definitions(-DPLATFORM_WIN32=1)
@@ -22,8 +23,12 @@ set(engineVkdll "${engineVkbase}.dll")
 set(glfw_lib "${EXTERNAL_BUILD_DIR}/glfw/src/${CMAKE_BUILD_TYPE}/glfw3.lib")
 set(diligentcore_lib "${EXTERNAL_BUILD_DIR}/DiligentCore/${CMAKE_BUILD_TYPE}/DiligentCore.lib")
 set(diligentvkstatic_lib "${EXTERNAL_BUILD_DIR}/DiligentCore/Graphics/GraphicsEngineVulkan/${CMAKE_BUILD_TYPE}/${engineVklib}")
+set(diligentimgui_lib "${EXTERNAL_BUILD_DIR}/DiligentTools/Imgui/${CMAKE_BUILD_TYPE}/Diligent-Imgui.lib")
+
+
 set(diligentvk_dll "${EXTERNAL_BUILD_DIR}/DiligentCore/Graphics/GraphicsEngineVulkan/${CMAKE_BUILD_TYPE}/${engineVkdll}")
-target_link_libraries(aya ${glfw_lib} ${diligentvkstatic_lib}) 
+
+target_link_libraries(aya ${glfw_lib} ${diligentvkstatic_lib} ${diligentimgui_lib} ${diligentcore_lib}) 
 
 target_include_directories(aya PRIVATE 
     ${CMAKE_BINARY_DIR}
